@@ -12,13 +12,14 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Work {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // auto increment
     private Long id;
-
     private String title;
+    private String description;
     private String imageURL;
 
 }
