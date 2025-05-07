@@ -1,6 +1,6 @@
 package com.ondoproject.controller;
 
-import com.ondoproject.dto.WorkResponse;
+import com.ondoproject.dto.work.WorkResponse;
 import com.ondoproject.service.WorkService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;

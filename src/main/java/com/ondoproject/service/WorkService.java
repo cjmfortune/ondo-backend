@@ -4,13 +4,12 @@ import com.ondoproject.domain.work.Work;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ondoproject.repository.WorkRepository;
-import com.ondoproject.dto.WorkResponse;
+import com.ondoproject.dto.work.WorkResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
