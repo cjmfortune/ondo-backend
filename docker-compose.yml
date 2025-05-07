@@ -4,33 +4,36 @@ services:
   db:
     image: postgres:16
     container_name: ondo-postgres
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: ondo
       POSTGRES_PASSWORD: 1qazXSW@
       POSTGRES_DB: ondo_db
+    ports:
+      - "15432:5432"
+    volumes:
+      - /volume1/docker/ondo/db:/var/lib/postgresql/data
+    restart: always
 
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ondo-backend:latest
     container_name: ondo-backend
     ports:
       - "3000:3000"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=prod
       - DB_HOST=db
       - PORT=3000
+    volumes:
+      - /volume1/docker/ondo/uploads:/app/uploads
     depends_on:
       - db
+    restart: always
 
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ondo-frontend:latest
     container_name: ondo-frontend
     ports:
       - "8081:80"
     depends_on:
       - backend
+    restart: always

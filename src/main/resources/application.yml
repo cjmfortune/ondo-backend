@@ -1,12 +1,24 @@
 server:
+  port: 8080
+
+spring:
+  application:
+    name: ondo-backend
+
+---
+
+# ✅ 기본 설정 (default)
+server:
   port: ${PORT:8080}
 
 spring:
+  config:
+    activate:
+      on-profile: default
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:5432/ondo_db
+    url: jdbc:postgresql://localhost:5432/ondo_db
     username: ondo
     password: 1qazXSW@
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,3 +26,28 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+---
+
+# ✅ docker 프로파일 설정
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://db:5432/ondo_db
+    username: ondo
+    password: 1qazXSW@
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect

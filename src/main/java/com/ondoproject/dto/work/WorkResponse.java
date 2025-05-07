@@ -1,4 +1,4 @@
-package com.ondoproject.dto;
+package com.ondoproject.dto.work;
 
 import lombok.*;
 
