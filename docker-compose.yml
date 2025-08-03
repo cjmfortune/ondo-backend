@@ -15,7 +15,8 @@ services:
     restart: always
 
   backend:
-    image: ondo-backend:latest
+    image: jongmin402/ondo-backend:latest
+    pull_policy: never
     container_name: ondo-backend
     ports:
       - "3000:3000"

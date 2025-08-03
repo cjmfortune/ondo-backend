@@ -9,16 +9,13 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-public class NewsResponse {
+public class NewsListResponse {
     private Long id;
     private String title;
-    private String contents;
+    private String summary;
     private String imageURL;
-    private String fileName;
-    private String fileType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean isPublished;
     private String author;
-    private String summary;
 }

@@ -30,6 +30,7 @@ spring:
 
 ---
 
+
 # ✅ docker 프로파일 설정
 server:
   port: ${PORT:8080}

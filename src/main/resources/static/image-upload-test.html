@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Upload Test</h1>
+    
+    <h2>단일 이미지 업로드</h2>
+    <form id="singleUploadForm">
+        <div class="form-group">
+            <label for="singleFile">이미지 파일:</label>
+            <input type="file" id="singleFile" name="file" accept="image/*" required>
+        </div>
+        <div class="form-group">
+            <label for="projectId">프로젝트 ID (선택사항):</label>
+            <input type="number" id="projectId" name="projectId">
+        </div>
+        <div class="form-group">
+            <label for="description">설명 (선택사항):</label>
+            <textarea id="description" name="description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="isShow">표시 여부:</label>
+            <select id="isShow" name="isShow">
+                <option value="true">표시</option>
+                <option value="false">숨김</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="isBasic">기본 이미지 여부:</label>
+            <select id="isBasic" name="isBasic">
+                <option value="false">일반</option>
+                <option value="true">기본</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="index">인덱스:</label>
+            <input type="number" id="index" name="index" value="0">
+        </div>
+        <button type="submit">업로드</button>
+    </form>
+
+    <h2>다중 이미지 업로드</h2>
+    <form id="multipleUploadForm">
+        <div class="form-group">
+            <label for="multipleFiles">이미지 파일들:</label>
+            <input type="file" id="multipleFiles" name="files" accept="image/*" multiple required>
+        </div>
+        <div class="form-group">
+            <label for="multipleProjectId">프로젝트 ID (선택사항):</label>
+            <input type="number" id="multipleProjectId" name="projectId">
+        </div>
+        <div class="form-group">
+            <label for="multipleDescription">설명 (선택사항):</label>
+            <textarea id="multipleDescription" name="description" rows="3"></textarea>
+        </div>
+        <button type="submit">다중 업로드</button>
+    </form>
+
+    <h2>이미지 정보 업데이트</h2>
+    <form id="updateImageForm">
+        <div class="form-group">
+            <label for="updateImageId">이미지 ID:</label>
+            <input type="number" id="updateImageId" name="imageId" required>
+        </div>
+        <div class="form-group">
+            <label for="updateImageName">이미지 파일명 (선택사항):</label>
+            <input type="text" id="updateImageName" name="imageName" placeholder="예: new-image-name.jpg">
+        </div>
+        <div class="form-group">
+            <label for="updateProjectId">프로젝트 ID (선택사항):</label>
+            <input type="number" id="updateProjectId" name="projectId">
+        </div>
+        <div class="form-group">
+            <label for="updateDescription">설명 (선택사항):</label>
+            <textarea id="updateDescription" name="description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="updateIsShow">표시 여부 (선택사항):</label>
+            <select id="updateIsShow" name="isShow">
+                <option value="">변경하지 않음</option>
+                <option value="true">표시</option>
+                <option value="false">숨김</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="updateIsBasic">기본 이미지 여부 (선택사항):</label>
+            <select id="updateIsBasic" name="isBasic">
+                <option value="">변경하지 않음</option>
+                <option value="false">일반</option>
+                <option value="true">기본</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="updateIndex">인덱스 (선택사항):</label>
+            <input type="number" id="updateIndex" name="index">
+        </div>
+        <button type="submit">업데이트</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+
+        document.getElementById('singleUploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const fileInput = document.getElementById('singleFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showResult('파일을 선택해주세요.', 'error');
+                return;
+            }
+            
+            formData.append('file', file);
+            formData.append('projectId', document.getElementById('projectId').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('isShow', document.getElementById('isShow').value);
+            formData.append('isBasic', document.getElementById('isBasic').value);
+            formData.append('index', document.getElementById('index').value);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/images/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult(`업로드 성공! 파일명: ${result.fileName}, URL: ${result.imageURL}`, 'success');
+                } else {
+                    showResult(`업로드 실패: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                showResult(`오류 발생: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('multipleUploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const fileInput = document.getElementById('multipleFiles');
+            const files = fileInput.files;
+            
+            if (files.length === 0) {
+                showResult('파일을 선택해주세요.', 'error');
+                return;
+            }
+            
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+            formData.append('projectId', document.getElementById('multipleProjectId').value);
+            formData.append('description', document.getElementById('multipleDescription').value);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/images/upload/multiple`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    let message = `${result.length}개 파일 업로드 성공!\n`;
+                    result.forEach((item, index) => {
+                        message += `${index + 1}. ${item.fileName} - ${item.imageURL}\n`;
+                    });
+                    showResult(message, 'success');
+                } else {
+                    showResult(`업로드 실패: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                showResult(`오류 발생: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('updateImageForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const imageId = document.getElementById('updateImageId').value;
+            if (!imageId) {
+                showResult('이미지 ID를 입력해주세요.', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            
+            // 값이 있는 필드만 추가
+            const imageName = document.getElementById('updateImageName').value;
+            if (imageName) formData.append('imageName', imageName);
+            
+            const projectId = document.getElementById('updateProjectId').value;
+            if (projectId) formData.append('projectId', projectId);
+            
+            const description = document.getElementById('updateDescription').value;
+            if (description) formData.append('description', description);
+            
+            const isShow = document.getElementById('updateIsShow').value;
+            if (isShow) formData.append('isShow', isShow);
+            
+            const isBasic = document.getElementById('updateIsBasic').value;
+            if (isBasic) formData.append('isBasic', isBasic);
+            
+            const index = document.getElementById('updateIndex').value;
+            if (index) formData.append('index', index);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/images/${imageId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult(`업데이트 성공! 파일명: ${result.fileName}, URL: ${result.imageURL}`, 'success');
+                } else {
+                    showResult(`업데이트 실패: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                showResult(`오류 발생: ${error.message}`, 'error');
+            }
+        });
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<div class="result ${type}">${message.replace(/\n/g, '<br>')}</div>`;
+        }
+    </script>
+</body>
+</html>

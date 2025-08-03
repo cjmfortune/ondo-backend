@@ -1,6 +1,6 @@
 package com.ondoproject.controller;
-import com.ondoproject.dto.member.MemberResponse;
-import com.ondoproject.service.member.MemberService;
+import com.ondoproject.dto.author.AuthorResponse;
+import com.ondoproject.service.author.AuthorService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +15,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+    private final AuthorService memberService;
     //Read
     @RequestMapping(value = "/read", method = RequestMethod.GET)
-    public List<MemberResponse> getAllMembers() {
-        List<MemberResponse> members = memberService.getAllMembers();
-        return members;
+    public List<AuthorResponse> getAllMembers() {
+        List<AuthorResponse> authors = memberService.getAllMembers();
+        return authors;
     }
 }
